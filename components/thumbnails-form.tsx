@@ -23,14 +23,17 @@ const ThumbnailsForm: React.FC<FormProps> = ({ thumbnailsApiUrl }) => {
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     if (image) {
-      console.log(image)
-      const response = await fetch('/api/upload', {
+      // Create a FormData object and append the file
+      const formData = new FormData()
+      formData.append('file', image)
+  
+      // Send the POST request
+      const response = await fetch(thumbnailsApiUrl, {
         method: 'POST',
         headers: {
-          responseUrl: 'https://thumbnail-generator-client.vercel.app/api/response',
-          'Content-Type': 'multipart/form-data'
+          responseUrl: 'https://thumbnail-generator-client.vercel.app/api/response'
         },
-        body: image
+        body: formData
       })
       if (response.ok) {
         console.log('Image sent successfully')
@@ -40,6 +43,8 @@ const ThumbnailsForm: React.FC<FormProps> = ({ thumbnailsApiUrl }) => {
       }
     }
   }
+  
+  
 
   return (
     <div>
@@ -47,7 +52,7 @@ const ThumbnailsForm: React.FC<FormProps> = ({ thumbnailsApiUrl }) => {
         <Input type="file" accept="image/*" onChange={handleFileChange} />
         <Button type="submit">Send Image</Button>
       </form>
-      {submit && <WebhookDisplay responseUrl='/api/response' />}
+      <WebhookDisplay responseUrl='/api/response' />
     </div>
   )
 }
