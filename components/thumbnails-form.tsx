@@ -25,7 +25,7 @@ const ThumbnailsForm: React.FC<FormProps> = ({ thumbnailsApiUrl }) => {
     if (image) {
       const formData = new FormData()
       formData.append('image', image)
-      const request = new Request(`hhtp://ghaow6ikzb.execute-api.us-east-1.amazonaws.com/prod/upload`, {
+      const request = new Request(`https://ghaow6ikzb.execute-api.us-east-1.amazonaws.com/prod/upload`, {
         method: 'POST',
         headers: {
           responseUrl: '/api/response',
