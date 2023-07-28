@@ -10,11 +10,11 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 export default function handler(req: NextApiRequest, res: NextApiResponse) {
   // Check if the request method is POST
   if (req.method === 'POST') {
+    console.log(req)
     // Use the request body directly as the payload
     const payload = req.body as WebhookPayload
 
-    // Access the properties from the payload
-    const { originalImageUrl, thumbnails, metadata } = payload
+    console.log(payload)
 
     // Set the response headers to indicate that this is an event stream
     res.setHeader('Content-Type', 'text/event-stream')
