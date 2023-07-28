@@ -23,8 +23,7 @@ const ThumbnailsForm: React.FC<FormProps> = ({ thumbnailsApiUrl }) => {
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     if (image) {
-      // Use the fetch() method with the URL and options arguments instead of the Request constructor
-      // Pass the file object directly as the body argument instead of using FormData
+      console.log(image)
       const response = await fetch('/api/upload', {
         method: 'POST',
         headers: {
