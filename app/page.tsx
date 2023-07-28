@@ -1,6 +1,6 @@
 import ThumbnailsForm from '@/components/thumbnails-form'
+import { thumbnailsApiUrl } from '@/lib/constants'
 
-const thumbnailsApiUrl = process.env.THUMBNAILS_API_URL || ''
 
 export default function Home() {
   return (

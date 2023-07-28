@@ -23,17 +23,16 @@ const ThumbnailsForm: React.FC<FormProps> = ({ thumbnailsApiUrl }) => {
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     if (image) {
-      const formData = new FormData()
-      formData.append('image', image)
-      const request = new Request(`https://ghaow6ikzb.execute-api.us-east-1.amazonaws.com/prod/upload`, {
+      // Use the fetch() method with the URL and options arguments instead of the Request constructor
+      // Pass the file object directly as the body argument instead of using FormData
+      const response = await fetch('/api/upload', {
         method: 'POST',
         headers: {
           responseUrl: '/api/response',
           'Content-Type': 'multipart/form-data'
         },
-        body: formData
+        body: image
       })
-      const response = await fetch(request)
       if (response.ok) {
         console.log('Image sent successfully')
         setSubmit(true)
