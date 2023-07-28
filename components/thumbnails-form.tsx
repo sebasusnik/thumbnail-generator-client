@@ -28,7 +28,7 @@ const ThumbnailsForm: React.FC<FormProps> = ({ thumbnailsApiUrl }) => {
       const response = await fetch('/api/upload', {
         method: 'POST',
         headers: {
-          responseUrl: '/api/response',
+          responseUrl: 'https://thumbnail-generator-client.vercel.app/api/response',
           'Content-Type': 'multipart/form-data'
         },
         body: image
@@ -37,7 +37,7 @@ const ThumbnailsForm: React.FC<FormProps> = ({ thumbnailsApiUrl }) => {
         console.log('Image sent successfully')
         setSubmit(true)
       } else {
-        console.error('Image sending failed')
+        console.error('Image sending failed', {response})
       }
     }
   }
