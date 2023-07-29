@@ -23,12 +23,10 @@ const ThumbnailsForm: React.FC<FormProps> = ({ thumbnailsApiUrl }) => {
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     if (image) {
-      // Create a FormData object and append the file
       const formData = new FormData()
-      formData.append('file', image)
+      formData.append('image', image)
   
-      // Send the POST request
-      const response = await fetch(thumbnailsApiUrl, {
+      const response = await fetch('https://jucn2y06m2.execute-api.us-east-1.amazonaws.com/prod/upload', {
         method: 'POST',
         headers: {
           responseUrl: 'https://thumbnail-generator-client.vercel.app/api/response'
@@ -43,7 +41,6 @@ const ThumbnailsForm: React.FC<FormProps> = ({ thumbnailsApiUrl }) => {
       }
     }
   }
-  
   
 
   return (
