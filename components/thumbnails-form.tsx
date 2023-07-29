@@ -29,7 +29,8 @@ const ThumbnailsForm: React.FC<FormProps> = ({ thumbnailsApiUrl }) => {
       const response = await fetch('https://jucn2y06m2.execute-api.us-east-1.amazonaws.com/prod/upload', {
         method: 'POST',
         headers: {
-          responseUrl: 'https://thumbnail-generator-client.vercel.app/api/response'
+          'Content-Type': 'multipart/form-data',
+          'X-Callback-URL': 'https://thumbnail-generator-client.vercel.app/api/response'
         },
         body: formData
       })
