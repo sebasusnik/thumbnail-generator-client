@@ -24,10 +24,11 @@ const ThumbnailsForm: React.FC<FormProps> = ({ thumbnailsApiUrl }) => {
     event.preventDefault()
     if (image) {
       const formData = new FormData()
-      formData.append('image', image)
+      formData.append('file', image)
   
       const response = await fetch('https://jucn2y06m2.execute-api.us-east-1.amazonaws.com/prod/upload', {
         method: 'POST',
+        mode: 'cors',
         headers: {
           'Content-Type': 'multipart/form-data',
           'X-Callback-URL': 'https://thumbnail-generator-client.vercel.app/api/response'
@@ -35,7 +36,7 @@ const ThumbnailsForm: React.FC<FormProps> = ({ thumbnailsApiUrl }) => {
         body: formData
       })
       if (response.ok) {
-        console.log('Image sent successfully')
+        console.log('Image sent successfully', {response})
         setSubmit(true)
       } else {
         console.error('Image sending failed', {response})
