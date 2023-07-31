@@ -1,5 +1,4 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { WEBHOOK_EVENT } from '@/lib/constants'
 import { WebhookPayload } from '@/types/types'
 
 import Cors from 'cors'
@@ -21,16 +20,8 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
 
       console.log(payload)
 
-      res.setHeader('Content-Type', 'text/event-stream')
-      res.setHeader('Cache-Control', 'no-cache')
-      res.setHeader('Connection', 'keep-alive')
-
-      res.write(`event: ${WEBHOOK_EVENT}\n`)
-      res.write(`data: ${JSON.stringify(payload)}\n\n`)
-
-      req.on('close', () => {
-        res.end()
-      })
+      // Send a status OK response to the lambda function
+      res.status(200).json({ message: 'Webhook received' })
     } else {
       res.status(405).json({ message: 'Method not allowed' })
     }
