@@ -1,9 +1,10 @@
 "use client"
 
-import React, { useState } from 'react'
+import { useState } from 'react'
 import WebhookDisplay from '@/components/webhook-display'
 import { Button } from './ui/button'
 import { Input } from './ui/input'
+import { useRouter } from 'next/router'
 
 interface FormProps {
   thumbnailsApiUrl: string
@@ -13,6 +14,8 @@ interface FormProps {
 const ThumbnailsForm: React.FC<FormProps> = ({ thumbnailsApiUrl, thumbnailsApiKey }) => {
   const [image, setImage] = useState<File | null>(null)
   const [submit, setSubmit] = useState<boolean>(false)
+  const router = useRouter();
+  const origin = typeof window !== 'undefined' && window.location.origin ? window.location.origin : '';
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0]
@@ -32,7 +35,7 @@ const ThumbnailsForm: React.FC<FormProps> = ({ thumbnailsApiUrl, thumbnailsApiKe
         mode: 'cors',
         headers: {
           'X-API-Key': thumbnailsApiKey,
-          'X-Callback-URL': 'http://192.168.0.19:3000/api/response'
+          'X-Callback-URL': `${origin}${router.asPath}`
         },
         body: formData
       })
