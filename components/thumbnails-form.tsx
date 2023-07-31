@@ -31,7 +31,6 @@ const ThumbnailsForm: React.FC<FormProps> = ({ thumbnailsApiUrl, thumbnailsApiKe
         method: 'POST',
         mode: 'cors',
         headers: {
-          'Content-Type': 'multipart/form-data',
           'X-API-Key': thumbnailsApiKey,
           'X-Callback-URL': 'http://192.168.0.19:3000/api/response'
         },
