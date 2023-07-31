@@ -1,12 +1,17 @@
+// api/response.ts
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { WebhookPayload } from '@/types/types'
 
 import Cors from 'cors'
+import { LRUCache } from 'lru-cache'
 
 const cors = Cors({
   origin: '*',
   methods: ['GET', 'HEAD', 'POST'],
 })
+
+// Create a cache instance
+const cache = new LRUCache({ max: 100, ttl: 1000 * 60 * 60 })
 
 export default function handler(req: NextApiRequest, res: NextApiResponse) {
   cors(req, res, (err: Error) => {
@@ -20,8 +25,17 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
 
       console.log(payload)
 
+      // Store the payload in the cache with a key of 'webhook'
+      cache.set('webhook', payload)
+
       // Send a status OK response to the lambda function
       res.status(200).json({ message: 'Webhook received' })
+    } else if (req.method === 'GET') {
+      // Get the payload from the cache with the key of 'webhook'
+      const payload = cache.get('webhook')
+
+      // Send the payload as a response
+      res.status(200).json(payload)
     } else {
       res.status(405).json({ message: 'Method not allowed' })
     }

@@ -2,9 +2,6 @@
 
 import React, { useEffect, useState } from 'react'
 
-// Import WEBHOOK_EVENT constant from constants.ts file
-import { WEBHOOK_EVENT } from '@/lib/constants'
-
 // Import WebhookPayload and WebhookDisplayProps types from types.ts file
 import { WebhookPayload, WebhookDisplayProps } from '@/types/types'
 
@@ -12,20 +9,22 @@ const WebhookDisplay: React.FC<WebhookDisplayProps> = ({ responseUrl }) => {
   // Use the WebhookPayload type to annotate the state variable without partial
   const [webhookData, setWebhookData] = useState<WebhookPayload>({})
 
-  useEffect(() => {
-    setWebhookData({})
-    const eventSource = new EventSource(responseUrl)
-    
-    eventSource.addEventListener(WEBHOOK_EVENT, (event) => {
-      // Use the WebhookPayload type to cast the event data without partial
-      const data = event.data as WebhookPayload
-      setWebhookData(data)
-    })
-    return () => {
-      eventSource.close()
-    }
-  }, [responseUrl])
+  // Fetch the webhook data from the response URL using SWR
+  // SWR will automatically revalidate the data when the cache is updated
+  const { data, error } = useSWR(responseUrl)
 
+  useEffect(() => {
+    if (data) {
+      setWebhookData(data)
+    }
+  }, [data])
+
+  if (error) return (
+    <div>
+      {error}
+    </div>
+  )
+  
   return (
     <div>
       {webhookData ? (
@@ -59,3 +58,7 @@ const WebhookDisplay: React.FC<WebhookDisplayProps> = ({ responseUrl }) => {
 }
 
 export default WebhookDisplay
+
+function useSWR(responseUrl: string): { data: any; error: any } {
+  throw new Error('Function not implemented.')
+}
