@@ -14,7 +14,6 @@ interface FormProps {
 const ThumbnailsForm: React.FC<FormProps> = ({ thumbnailsApiUrl, thumbnailsApiKey }) => {
   const [image, setImage] = useState<File | null>(null)
   const [submit, setSubmit] = useState<boolean>(false)
-  const router = useRouter();
   const origin = typeof window !== 'undefined' && window.location.origin ? window.location.origin : '';
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -35,7 +34,7 @@ const ThumbnailsForm: React.FC<FormProps> = ({ thumbnailsApiUrl, thumbnailsApiKe
         mode: 'cors',
         headers: {
           'X-API-Key': thumbnailsApiKey,
-          'X-Callback-URL': `${origin}${router.asPath}`
+          'X-Callback-URL': `${origin}/response`
         },
         body: formData
       })
