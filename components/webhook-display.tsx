@@ -1,6 +1,8 @@
 "use client"
 
 import React, { useEffect, useState } from 'react'
+import useSWR from 'swr'
+
 
 // Import WebhookPayload and WebhookDisplayProps types from types.ts file
 import { WebhookPayload, WebhookDisplayProps } from '@/types/types'
@@ -59,6 +61,4 @@ const WebhookDisplay: React.FC<WebhookDisplayProps> = ({ responseUrl }) => {
 
 export default WebhookDisplay
 
-function useSWR(responseUrl: string): { data: any; error: any } {
-  throw new Error('Function not implemented.')
-}
+
