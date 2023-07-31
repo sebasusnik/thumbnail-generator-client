@@ -7,9 +7,10 @@ import { Input } from './ui/input'
 
 interface FormProps {
   thumbnailsApiUrl: string
+  thumbnailsApiKey: string
 }
 
-const ThumbnailsForm: React.FC<FormProps> = ({ thumbnailsApiUrl }) => {
+const ThumbnailsForm: React.FC<FormProps> = ({ thumbnailsApiUrl, thumbnailsApiKey }) => {
   const [image, setImage] = useState<File | null>(null)
   const [submit, setSubmit] = useState<boolean>(false)
 
@@ -26,12 +27,13 @@ const ThumbnailsForm: React.FC<FormProps> = ({ thumbnailsApiUrl }) => {
       const formData = new FormData()
       formData.append('file', image)
   
-      const response = await fetch('https://jucn2y06m2.execute-api.us-east-1.amazonaws.com/prod/upload', {
+      const response = await fetch(thumbnailsApiUrl, {
         method: 'POST',
         mode: 'cors',
         headers: {
           'Content-Type': 'multipart/form-data',
-          'X-Callback-URL': 'https://thumbnail-generator-client.vercel.app/api/response'
+          'X-API-Key': thumbnailsApiKey,
+          'X-Callback-URL': 'http://192.168.0.19:3000/api/response'
         },
         body: formData
       })
