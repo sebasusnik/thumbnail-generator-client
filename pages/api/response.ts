@@ -1,4 +1,3 @@
-// api/response.ts
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { WebhookPayload } from '@/types/types'
 
@@ -23,12 +22,12 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
     if (req.method === 'POST') {
       const payload = req.body as WebhookPayload
 
-      console.log(payload)
+      console.log('Received payload:', payload)
 
       // Store the payload in the cache with a key of 'webhook'
       cache.set('webhook', payload)
 
-      console.log('Cache set for webhook')
+      console.log('Cache set for webhook:', cache.dump())
 
       // Send a status OK response to the lambda function
       res.status(200).json({ message: 'Webhook received' })
@@ -36,11 +35,13 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
       // Get the payload from the cache with the key of 'webhook'
       const payload = cache.get('webhook')
 
+      console.log('Retrieved payload from cache:', payload)
+
       if (payload === undefined) {
         // If the payload is undefined, return an error response
         res.status(404).json({ message: 'Webhook not found' })
       } else {
-        console.log(payload)
+        console.log('Sending payload:', payload)
         // Otherwise, send the payload as a response
         res.status(200).json({ payload })
       }

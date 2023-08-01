@@ -23,7 +23,7 @@ const WebhookDisplay: React.FC<WebhookDisplayProps> = ({ responseUrl }) => {
         if (payload.message !== 'Webhook not found') {
           // Update the state with the payload
           setWebhookData(payload)
-  
+          console.log(`Webhook data: ${webhookData}`)
           // Clear the interval if you only want to update the state once
           clearInterval(intervalId)
         }
