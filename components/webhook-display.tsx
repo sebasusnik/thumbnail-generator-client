@@ -13,7 +13,7 @@ const WebhookDisplay: React.FC<WebhookDisplayProps> = ({ responseUrl }) => {
     const intervalId = setInterval(async () => {
       // Make a GET request to your API route
       const res = await fetch(responseUrl)
-  
+      console.log(res)
       try {
         // Try to parse the JSON data
         const payload = await res.json()

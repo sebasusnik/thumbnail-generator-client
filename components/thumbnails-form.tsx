@@ -54,7 +54,7 @@ const ThumbnailsForm: React.FC<FormProps> = ({ thumbnailsApiUrl, thumbnailsApiKe
         <Input type="file" accept="image/*" onChange={handleFileChange} />
         <Button type="submit">Send Image</Button>
       </form>
-      <WebhookDisplay responseUrl='/api/response' />
+      {submit && <WebhookDisplay responseUrl='/api/response' />}
     </div>
   )
 }
