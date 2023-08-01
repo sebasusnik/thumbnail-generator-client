@@ -1,52 +1,31 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { WebhookPayload } from '@/types/types'
+import { withCache } from '@vercel/cache'
+import { LocalCache } from '@/lib/local-cache'
 
-import Cors from 'cors'
+async function handler(req: NextApiRequest, res: NextApiResponse) {
+  // Use the Vercel Data Cache in production and the local cache in development
+  const cache = process.env.NODE_ENV === 'production' ? withCache(req, res) : new LocalCache()
 
-const cors = Cors({
-  origin: '*',
-  methods: ['GET', 'HEAD', 'POST'],
-})
+  // Get the payload from the cache
+  const payload = await cache.get('webhookPayload')
 
+  if (req.method === 'POST') {
+    // Store the payload in the cache
+    await cache.set('webhookPayload', req.body)
 
-export default function handler(req: NextApiRequest, res: NextApiResponse) {
-  cors(req, res, (err: Error) => {
-    if (err) {
-      res.status(500).json({ message: 'Internal Server Error' })
-      return
-    }
-
-    // Create a global variable to store the payload
-    let webhookPayload: WebhookPayload | undefined
-
-    if (req.method === 'POST') {
-      const payload = req.body as WebhookPayload
-
-      console.log('Received payload:', payload)
-
-      // Store the payload in the global variable
-      webhookPayload = payload
-
-      console.log('Webhook payload set')
-
-      // Send a status OK response to the lambda function
-      res.status(200).json({ message: 'Webhook received' })
-    } else if (req.method === 'GET') {
-      // Get the payload from the global variable
-      const payload = webhookPayload
-
-      console.log('Retrieved payload from cache:', payload)
-
-      if (payload === undefined) {
-        // If the payload is undefined, return an error response
-        res.status(404).json({ message: 'Webhook not found' })
-      } else {
-        console.log('Sending payload:', payload)
-        // Otherwise, send the payload as a response
-        res.status(200).json(payload)
-      }
+    // Send a status OK response to the lambda function
+    res.status(200).json({ message: 'Webhook received' })
+  } else if (req.method === 'GET') {
+    if (payload === undefined) {
+      // If the payload is undefined, return an error response
+      res.status(404).json({ message: 'Webhook not found' })
     } else {
-      res.status(405).json({ message: 'Method not allowed' })
+      // Otherwise, send the payload as a response
+      res.status(200).json(payload)
     }
-  })
+  } else {
+    res.status(405).json({ message: 'Method not allowed' })
+  }
 }
+
+export default handler

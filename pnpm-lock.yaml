@@ -41,6 +41,9 @@ dependencies:
   eslint-config-next:
     specifier: 13.4.12
     version: 13.4.12(eslint@8.46.0)(typescript@5.1.6)
+  local-cache:
+    specifier: ^0.1.0
+    version: 0.1.0
   lru-cache:
     specifier: ^10.0.0
     version: 10.0.0
@@ -1922,6 +1925,10 @@ packages:
 
   /lines-and-columns@1.2.4:
     resolution: {integrity: sha512-7ylylesZQ/PV29jhEDl3Ufjo6ZX7gCqJr5F7PKrqc93v7fzSymt1BpwEU8nAUXs8qzzvqhbjhK5QZg6Mt/HkBg==}
+    dev: false
+
+  /local-cache@0.1.0:
+    resolution: {integrity: sha512-InPYXuQq79hE3kB8WOvEs31XchbcJYUBo2V+GmH34Xm1+AJxyEItpaWbTiP+3mGwsYK8UMgdlOUOPntk4X8KaQ==}
     dev: false
 
   /locate-path@6.0.0:
