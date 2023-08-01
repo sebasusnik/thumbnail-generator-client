@@ -17,6 +17,8 @@ const WebhookDisplay: React.FC<WebhookDisplayProps> = ({ responseUrl }) => {
       try {
         // Try to parse the JSON data
         const payload = await res.json()
+
+        console.log(payload)
   
         if (payload) {
           // Update the state with the payload
