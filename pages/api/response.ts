@@ -2,15 +2,14 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 import { WebhookPayload } from '@/types/types'
 
 import Cors from 'cors'
-import { LRUCache } from 'lru-cache'
 
 const cors = Cors({
   origin: '*',
   methods: ['GET', 'HEAD', 'POST'],
 })
 
-// Create a cache instance
-const cache = new LRUCache({ max: 100, ttl: 1000 * 60 * 60 })
+// Create a global variable to store the payload
+let webhookPayload: WebhookPayload | undefined
 
 export default function handler(req: NextApiRequest, res: NextApiResponse) {
   cors(req, res, (err: Error) => {
@@ -24,16 +23,16 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
 
       console.log('Received payload:', payload)
 
-      // Store the payload in the cache with a key of 'webhook'
-      cache.set('webhook', payload)
+      // Store the payload in the global variable
+      webhookPayload = payload
 
-      console.log('Cache set for webhook:', cache.dump())
+      console.log('Webhook payload set')
 
       // Send a status OK response to the lambda function
       res.status(200).json({ message: 'Webhook received' })
     } else if (req.method === 'GET') {
-      // Get the payload from the cache with the key of 'webhook'
-      const payload = cache.get('webhook')
+      // Get the payload from the global variable
+      const payload = webhookPayload
 
       console.log('Retrieved payload from cache:', payload)
 
@@ -43,7 +42,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
       } else {
         console.log('Sending payload:', payload)
         // Otherwise, send the payload as a response
-        res.status(200).json(payload)
+        res.status(200).json({ payload })
       }
     } else {
       res.status(405).json({ message: 'Method not allowed' })
