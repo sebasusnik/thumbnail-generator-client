@@ -31,7 +31,7 @@ const WebhookDisplay: React.FC<WebhookDisplayProps> = ({ responseUrl }) => {
         // If an error occurs, log the error and continue polling
         console.error(err)
       }
-    }, 2000) // Check for new payloads every 2 seconds
+    }, 6000) // Check for new payloads every 2 seconds
   
     return () => {
       clearInterval(intervalId)
