@@ -41,7 +41,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
         res.status(404).json({ message: 'Webhook not found' })
       } else {
         // Otherwise, send the payload as a response
-        res.status(200).json(payload)
+        res.status(200).json({ payload })
       }
     } else {
       res.status(405).json({ message: 'Method not allowed' })
