@@ -21,7 +21,8 @@ export type WebhookPayload = Partial<{
     fileSize: number
     type: string
     filename: string
-  }
+  },
+  callbackUrl: string
 }>
 
 // Declare and export the type for the component props
