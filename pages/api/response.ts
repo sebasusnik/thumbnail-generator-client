@@ -8,8 +8,6 @@ const cors = Cors({
   methods: ['GET', 'HEAD', 'POST'],
 })
 
-// Create a global variable to store the payload
-let webhookPayload: WebhookPayload | undefined
 
 export default function handler(req: NextApiRequest, res: NextApiResponse) {
   cors(req, res, (err: Error) => {
@@ -17,6 +15,9 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
       res.status(500).json({ message: 'Internal Server Error' })
       return
     }
+
+    // Create a global variable to store the payload
+    let webhookPayload: WebhookPayload | undefined
 
     if (req.method === 'POST') {
       const payload = req.body as WebhookPayload
