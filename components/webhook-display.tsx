@@ -1,8 +1,6 @@
 "use client"
 
 import React, { useEffect, useState } from 'react'
-import useSWR from 'swr'
-
 
 // Import WebhookPayload and WebhookDisplayProps types from types.ts file
 import { WebhookPayload, WebhookDisplayProps } from '@/types/types'
@@ -11,22 +9,26 @@ const WebhookDisplay: React.FC<WebhookDisplayProps> = ({ responseUrl }) => {
   // Use the WebhookPayload type to annotate the state variable without partial
   const [webhookData, setWebhookData] = useState<WebhookPayload>({})
 
-  // Fetch the webhook data from the response URL using SWR
-  // SWR will automatically revalidate the data when the cache is updated
-  const { data, error } = useSWR(responseUrl)
-
   useEffect(() => {
-    if (data) {
-      setWebhookData(data)
-    }
-  }, [data])
+    const intervalId = setInterval(async () => {
+      // Make a GET request to your API route
+      const res = await fetch(responseUrl)
+      const payload = await res.json()
 
-  if (error) return (
-    <div>
-      {error}
-    </div>
-  )
-  
+      if (payload) {
+        // Update the state with the payload
+        setWebhookData(payload)
+
+        // Clear the interval if you only want to update the state once
+        clearInterval(intervalId)
+      }
+    }, 5000) // Check for new payloads every 5 seconds
+
+    return () => {
+      clearInterval(intervalId)
+    }
+  }, [responseUrl])
+
   return (
     <div>
       {webhookData ? (
@@ -60,5 +62,3 @@ const WebhookDisplay: React.FC<WebhookDisplayProps> = ({ responseUrl }) => {
 }
 
 export default WebhookDisplay
-
-

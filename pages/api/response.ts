@@ -28,6 +28,8 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
       // Store the payload in the cache with a key of 'webhook'
       cache.set('webhook', payload)
 
+      console.log('Cache set for webhook')
+
       // Send a status OK response to the lambda function
       res.status(200).json({ message: 'Webhook received' })
     } else if (req.method === 'GET') {
