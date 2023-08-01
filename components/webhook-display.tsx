@@ -13,21 +13,29 @@ const WebhookDisplay: React.FC<WebhookDisplayProps> = ({ responseUrl }) => {
     const intervalId = setInterval(async () => {
       // Make a GET request to your API route
       const res = await fetch(responseUrl)
-      const payload = await res.json()
-
-      if (payload) {
-        // Update the state with the payload
-        setWebhookData(payload)
-
-        // Clear the interval if you only want to update the state once
-        clearInterval(intervalId)
+  
+      try {
+        // Try to parse the JSON data
+        const payload = await res.json()
+  
+        if (payload) {
+          // Update the state with the payload
+          setWebhookData(payload)
+  
+          // Clear the interval if you only want to update the state once
+          clearInterval(intervalId)
+        }
+      } catch (err) {
+        // If an error occurs, log the error and continue polling
+        console.error(err)
       }
-    }, 5000) // Check for new payloads every 5 seconds
-
+    }, 2000) // Check for new payloads every 2 seconds
+  
     return () => {
       clearInterval(intervalId)
     }
   }, [responseUrl])
+  
 
   return (
     <div>
