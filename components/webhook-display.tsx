@@ -7,7 +7,7 @@ import { WebhookPayload, WebhookDisplayProps } from '@/types/types'
 
 const WebhookDisplay: React.FC<WebhookDisplayProps> = ({ responseUrl }) => {
   // Use the WebhookPayload type to annotate the state variable without partial
-  const [webhookData, setWebhookData] = useState<WebhookPayload>({})
+  const [webhookData, setWebhookData] = useState<WebhookPayload | null>(null)
 
   useEffect(() => {
     const intervalId = setInterval(async () => {
