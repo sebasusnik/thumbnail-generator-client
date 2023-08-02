@@ -1,31 +1,56 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { withCache } from '@vercel/cache'
-import { LocalCache } from '@/lib/local-cache'
+import { WebhookPayload } from '@/types/types'
 
-async function handler(req: NextApiRequest, res: NextApiResponse) {
-  // Use the Vercel Data Cache in production and the local cache in development
-  const cache = process.env.NODE_ENV === 'production' ? withCache(req, res) : new LocalCache()
+import Cors from 'cors'
 
-  // Get the payload from the cache
-  const payload = await cache.get('webhookPayload')
+const cors = Cors({
+  origin: '*',
+  methods: ['GET', 'HEAD', 'POST'],
+})
 
-  if (req.method === 'POST') {
-    // Store the payload in the cache
-    await cache.set('webhookPayload', req.body)
+import { Redis } from '@upstash/redis'
+import { RADIS_TOKEN, RADIS_URL } from '@/lib/constants'
 
-    // Send a status OK response to the lambda function
-    res.status(200).json({ message: 'Webhook received' })
-  } else if (req.method === 'GET') {
-    if (payload === undefined) {
-      // If the payload is undefined, return an error response
-      res.status(404).json({ message: 'Webhook not found' })
-    } else {
-      // Otherwise, send the payload as a response
-      res.status(200).json(payload)
+const redis = new Redis({
+  url: RADIS_URL ,
+  token: RADIS_TOKEN 
+})
+export default function handler(req: NextApiRequest, res: NextApiResponse) {
+  cors(req, res, (err: Error) => {
+    if (err) {
+      res.status(500).json({ message: 'Internal Server Error' })
+      return
     }
-  } else {
-    res.status(405).json({ message: 'Method not allowed' })
-  }
-}
 
-export default handler
+    if (req.method === 'POST') {
+      const payload = req.body as WebhookPayload
+
+      console.log('Received payload:', payload)
+
+      // Store the payload in Upstash
+      redis.set('webhookPayload', JSON.stringify(payload))
+
+      console.log('Webhook payload set')
+
+      // Send a status OK response to the lambda function
+      res.status(200).json({ message: 'Webhook received' })
+    } else if (req.method === 'GET') {
+      // Get the payload from Upstash
+      redis.get('webhookPayload').then((result) => {
+        const payload = JSON.parse(result as string)
+      
+        console.log('Retrieved payload from cache:', payload)
+      
+        if (payload === undefined) {
+          // If the payload is undefined, return an error response
+          res.status(404).json({ message: 'Webhook not found' })
+        } else {
+          console.log('Sending payload:', payload)
+          // Otherwise, send the payload as a response
+          res.status(200).json(payload)
+        }
+      })    } else {
+      res.status(405).json({ message: 'Method not allowed' })
+    }
+  })
+}
